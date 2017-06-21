@@ -8,6 +8,13 @@ import simple_markdown.table
 import simple_markdown.table as Table
 
 
+def print_tables(table, expected_table):
+    print("\n" + "=" * 80)
+    print("\nformatted table:\n")
+    print(table)
+    print("\nexpected table:\n")
+    print(expected_table)
+
 class test_markdown_table(unittest.TestCase):
     def setUp(self):
         pass
@@ -48,6 +55,7 @@ col 2 is      | centered|   $12
 |$2           |            |             |"""
 
         table = Table.format(raw_table, margin=0, padding=0)
+        print_tables(table, expected_table_0_0)
         self.assertEqual(table, expected_table_0_0)
 
         # test table with minimal form (#7)
@@ -64,7 +72,57 @@ a|"""
 | a   |            |"""
 
         table = Table.format(small, margin=1, padding=0)
+        print_tables(table, expected_small)
         self.assertEqual(table, expected_small)
+
+
+    def test_fullwidth(self):
+        raw_table = """\
+|   Tables        | Are       | Cool  |
+:-------------|:-------------:|:-----|
+ | col 1 is      | left-aligned                                    | $1600 |  
+col 2 is      | centered|   $12  
+  | zebra stripes|       |            are neat   $1 |  
+|| |$hello
+|    $2 |
+| 业务方向      | 线人  |线人2       |
+| 运营后台 - 销售 | 雪、鹏、丽 | 雪、
+| 智能商业部     | 瑞         |  雪、"""
+
+        expected_table_0_0 = """\
+|Ｔａｂｌｅｓ　　　　　　　|　　　　Ａｒｅ　　　　　|Ｃｏｏｌ　　　　　　　　　|
+|:-------------------------|:----------------------:|:-------------------------|
+|ｃｏｌ　１　ｉｓ　　　　　|ｌｅｆｔ－ａｌｉｇｎｅｄ|＄１６００　　　　　　　　|
+|ｃｏｌ　２　ｉｓ　　　　　|　　ｃｅｎｔｅｒｅｄ　　|＄１２　　　　　　　　　　|
+|ｚｅｂｒａ　ｓｔｒｉｐｅｓ|　　　　　　　　　　　　|ａｒｅ　ｎｅａｔ　　　＄１|
+|　　　　　　　　　　　　　|　　　　　　　　　　　　|＄ｈｅｌｌｏ　　　　　　　|
+|＄２　　　　　　　　　　　|　　　　　　　　　　　　|　　　　　　　　　　　　　|
+|业务方向　　　　　　　　　|　　　　　线人　　　　　|线人２　　　　　　　　　　|
+|运营后台　－　销售　　　　|　　　雪、鹏、丽　　　　|雪、　　　　　　　　　　　|
+|智能商业部　　　　　　　　|　　　　　瑞　　　　　　|雪、　　　　　　　　　　　|"""
+
+        expected_table_2_2 = """\
+|  Ｔａｂｌｅｓ　　　　　　　    |   　　　　Ａｒｅ　　　　　   |  Ｃｏｏｌ　　　　　　　　　    |
+|:-------------------------------|:----------------------------:|:-------------------------------|
+|  ｃｏｌ　１　ｉｓ　　　　　    |   ｌｅｆｔ－ａｌｉｇｎｅｄ   |  ＄１６００　　　　　　　　    |
+|  ｃｏｌ　２　ｉｓ　　　　　    |   　　ｃｅｎｔｅｒｅｄ　　   |  ＄１２　　　　　　　　　　    |
+|  ｚｅｂｒａ　ｓｔｒｉｐｅｓ    |   　　　　　　　　　　　　   |  ａｒｅ　ｎｅａｔ　　　＄１    |
+|  　　　　　　　　　　　　　    |   　　　　　　　　　　　　   |  ＄ｈｅｌｌｏ　　　　　　　    |
+|  ＄２　　　　　　　　　　　    |   　　　　　　　　　　　　   |  　　　　　　　　　　　　　    |
+|  业务方向　　　　　　　　　    |   　　　　　线人　　　　　   |  线人２　　　　　　　　　　    |
+|  运营后台　－　销售　　　　    |   　　　雪、鹏、丽　　　　   |  雪、　　　　　　　　　　　    |
+|  智能商业部　　　　　　　　    |   　　　　　瑞　　　　　　   |  雪、　　　　　　　　　　　    |"""
+
+        table = Table.format(raw_table, margin=0, padding=0,
+                             default_justify=Table.Justify.CENTER)
+        print_tables(table, expected_table_0_0)
+        self.assertEqual(table, expected_table_0_0)
+
+        table = Table.format(raw_table, margin=2, padding=2,
+                             default_justify=Table.Justify.CENTER)
+        print_tables(table, expected_table_2_2)
+        self.assertEqual(table, expected_table_2_2)
+
 
     def test_find_all(self):
         junk_tables = """
