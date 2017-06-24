@@ -8,6 +8,16 @@ import simple_markdown.table
 import simple_markdown.table as Table
 
 
+def print_all_tables(raw_table, table, expected_table):
+    print("\n" + "=" * 80)
+    print("\nraw table:\n")
+    print(raw_table)
+    print("\nformatted table:\n")
+    print(table)
+    print("\nexpected table:\n")
+    print(expected_table)
+
+
 def print_tables(table, expected_table):
     print("\n" + "=" * 80)
     print("\nformatted table:\n")
@@ -43,6 +53,7 @@ col 2 is      | centered|   $12
 
         table = Table.format(raw_table, margin=2, padding=2,
                              default_justify=Table.Justify.CENTER)
+        print_tables(table, expected_table_2_2)
         self.assertEqual(table, expected_table_2_2)
 
         expected_table_0_0 = """\
@@ -87,9 +98,9 @@ col 2 is      | centered|   $12
 |    $2 |
 | 业务方向      | 线人  |线人2       |
 | 运营后台 - 销售 | 雪、鹏、丽 | 雪、
-| 智能商业部     | 瑞         |  雪、"""
+| 智能商业部     | 瑞mixed         |  雪、"""
 
-        expected_table_0_0 = """\
+        expected_table_0_0_cjk = """\
 |Ｔａｂｌｅｓ　　　　　　　|　　　　Ａｒｅ　　　　　|Ｃｏｏｌ　　　　　　　　　|
 |:-------------------------|:----------------------:|:-------------------------|
 |ｃｏｌ　１　ｉｓ　　　　　|ｌｅｆｔ－ａｌｉｇｎｅｄ|＄１６００　　　　　　　　|
@@ -99,9 +110,14 @@ col 2 is      | centered|   $12
 |＄２　　　　　　　　　　　|　　　　　　　　　　　　|　　　　　　　　　　　　　|
 |业务方向　　　　　　　　　|　　　　　线人　　　　　|线人２　　　　　　　　　　|
 |运营后台　－　销售　　　　|　　　雪、鹏、丽　　　　|雪、　　　　　　　　　　　|
-|智能商业部　　　　　　　　|　　　　　瑞　　　　　　|雪、　　　　　　　　　　　|"""
+|智能商业部　　　　　　　　|　　　瑞ｍｉｘｅｄ　　　|雪、　　　　　　　　　　　|"""
 
-        expected_table_2_2 = """\
+        table = Table.format(raw_table, margin=0, padding=0,
+            default_justify=Table.Justify.CENTER, convert_cjk=True)
+        print_tables(table, expected_table_0_0_cjk)
+        self.assertEqual(table, expected_table_0_0_cjk)
+
+        expected_table_2_2_cjk = """\
 |  Ｔａｂｌｅｓ　　　　　　　    |   　　　　Ａｒｅ　　　　　   |  Ｃｏｏｌ　　　　　　　　　    |
 |:-------------------------------|:----------------------------:|:-------------------------------|
 |  ｃｏｌ　１　ｉｓ　　　　　    |   ｌｅｆｔ－ａｌｉｇｎｅｄ   |  ＄１６００　　　　　　　　    |
@@ -111,15 +127,44 @@ col 2 is      | centered|   $12
 |  ＄２　　　　　　　　　　　    |   　　　　　　　　　　　　   |  　　　　　　　　　　　　　    |
 |  业务方向　　　　　　　　　    |   　　　　　线人　　　　　   |  线人２　　　　　　　　　　    |
 |  运营后台　－　销售　　　　    |   　　　雪、鹏、丽　　　　   |  雪、　　　　　　　　　　　    |
-|  智能商业部　　　　　　　　    |   　　　　　瑞　　　　　　   |  雪、　　　　　　　　　　　    |"""
+|  智能商业部　　　　　　　　    |   　　　瑞ｍｉｘｅｄ　　　   |  雪、　　　　　　　　　　　    |"""
+        
+        table = Table.format(raw_table, margin=2, padding=2,
+            default_justify=Table.Justify.CENTER, convert_cjk=True)
+        print_tables(table, expected_table_2_2_cjk)
+        self.assertEqual(table, expected_table_2_2_cjk)
 
+        expected_table_0_0 = """\
+|Tables         |    Are     |Cool         |
+|:--------------|:----------:|:------------|
+|col 1 is       |left-aligned|$1600        |
+|col 2 is       |  centered  |$12          |
+|zebra stripes  |            |are neat   $1|
+|               |            |$hello       |
+|$2             |            |             |
+|业务方向       |    线人    |线人2        |
+|运营后台 - 销售| 雪、鹏、丽 |雪、         |
+|智能商业部     |  瑞mixed   |雪、         |"""
+        
         table = Table.format(raw_table, margin=0, padding=0,
-                             default_justify=Table.Justify.CENTER)
+            default_justify=Table.Justify.CENTER, convert_cjk=False)
         print_tables(table, expected_table_0_0)
         self.assertEqual(table, expected_table_0_0)
 
+        expected_table_2_2 = """\
+|  Tables             |       Are        |  Cool             |
+|:--------------------|:----------------:|:------------------|
+|  col 1 is           |   left-aligned   |  $1600            |
+|  col 2 is           |     centered     |  $12              |
+|  zebra stripes      |                  |  are neat   $1    |
+|                     |                  |  $hello           |
+|  $2                 |                  |                   |
+|  业务方向           |       线人       |  线人2            |
+|  运营后台 - 销售    |    雪、鹏、丽    |  雪、             |
+|  智能商业部         |     瑞mixed      |  雪、             |"""
+        
         table = Table.format(raw_table, margin=2, padding=2,
-                             default_justify=Table.Justify.CENTER)
+            default_justify=Table.Justify.CENTER, convert_cjk=False)
         print_tables(table, expected_table_2_2)
         self.assertEqual(table, expected_table_2_2)
 
