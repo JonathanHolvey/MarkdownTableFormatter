@@ -131,7 +131,7 @@ def format(raw_table, margin=1, padding=0, default_justify=Justify.LEFT,
             if justify[c] == Justify.CENTER:
                 div, mod = divmod(col_width[c] - len(col) - cjk_padding, 2)
                 text = space * div + col + space * (div+mod)
-                text = " " * int(padding/2) + text + " " * int(padding/2)
+                text = text + " " * padding
             elif justify[c] == Justify.RIGHT:
                 text = \
                     " " * padding + col.rjust(col_width[c] - cjk_padding, space)
